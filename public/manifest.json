@@ -1,0 +1,22 @@
+{
+  "name": "Sleepmaxxing",
+  "short_name": "Sleepmaxxing",
+  "description": "One technique a night to quiet an overthinking mind.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#14162b",
+  "theme_color": "#14162b",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
