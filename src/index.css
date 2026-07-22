@@ -28,6 +28,29 @@ button, input {
   font-size: 16px; /* prevents iOS zoom-on-focus */
 }
 
+button {
+  transition: transform 0.12s ease, opacity 0.12s ease, filter 0.12s ease;
+}
+
+button:active {
+  transform: scale(0.96);
+  filter: brightness(0.92);
+}
+
+button:disabled {
+  opacity: 0.5;
+  transform: none;
+}
+
+.fade-in {
+  animation: fade-in 0.25s ease;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 button:focus-visible,
 input:focus-visible {
   outline: 2px solid var(--accent);

@@ -9,7 +9,6 @@ export default function Settings({ userId }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [saved, setSaved] = useState(false)
-  const [reminderHour, setReminderHour] = useState(8)
   const [timezone, setTimezone] = useState('UTC')
 
   const [newPassword, setNewPassword] = useState('')
@@ -24,14 +23,13 @@ export default function Settings({ userId }) {
   async function load() {
     const { data, error } = await supabase
       .from('profiles')
-      .select('reminder_hour, timezone')
+      .select('timezone')
       .eq('id', userId)
       .maybeSingle()
 
     if (error) {
       setError(error.message)
     } else if (data) {
-      setReminderHour(data.reminder_hour ?? 8)
       setTimezone(data.timezone ?? 'UTC')
     }
     setLoading(false)
@@ -42,7 +40,7 @@ export default function Settings({ userId }) {
     setError(null)
     const { error } = await supabase
       .from('profiles')
-      .update({ reminder_hour: reminderHour, timezone })
+      .update({ timezone })
       .eq('id', userId)
 
     if (error) setError(error.message)
@@ -78,19 +76,6 @@ export default function Settings({ userId }) {
   return (
     <div style={{ padding: 24, maxWidth: 420, margin: '0 auto' }}>
       <h1 style={{ fontSize: 22, marginBottom: 16 }}>Settings</h1>
-
-      <label style={label}>Reminder time</label>
-      <select
-        value={reminderHour}
-        onChange={(e) => setReminderHour(Number(e.target.value))}
-        style={input}
-      >
-        {Array.from({ length: 24 }, (_, h) => (
-          <option key={h} value={h}>
-            {h === 0 ? '12:00 AM' : h < 12 ? `${h}:00 AM` : h === 12 ? '12:00 PM' : `${h - 12}:00 PM`}
-          </option>
-        ))}
-      </select>
 
       <label style={label}>Timezone</label>
       <select value={timezone} onChange={(e) => setTimezone(e.target.value)} style={input}>

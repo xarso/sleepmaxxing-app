@@ -192,30 +192,34 @@ export default function DailyView({ userId }) {
     setFreezeUsedNotice(freezeUsed)
   }
 
-  if (loading) return <Centered>Loading today's technique…</Centered>
-  if (error) return <Centered>Something broke: {error}</Centered>
+  if (loading) return <Centered>One second.</Centered>
+  if (error) return <Centered>Something's broken: {error}</Centered>
 
   const technique = assignment.techniques
 
   // Stage 1: no check-in yet -> ask mood before.
   if (!checkin) {
     return (
-      <MoodPrompt
-        title="How are you feeling right now?"
-        onSelect={submitMoodBefore}
-      />
+      <div key="mood-before" className="fade-in">
+        <MoodPrompt
+          title="Before we start — where's your head at?"
+          onSelect={submitMoodBefore}
+        />
+      </div>
     )
   }
 
   // Stage 2: mood_before set, mood_after not yet -> show the technique.
   if (checkin.mood_after == null) {
     return (
-      <TechniqueCard
-        technique={technique}
-        onComplete={() => setCheckin({ ...checkin, __showAfterPrompt: true })}
-        showAfterPrompt={checkin.__showAfterPrompt}
-        onMoodAfter={submitMoodAfter}
-      />
+      <div key="technique" className="fade-in">
+        <TechniqueCard
+          technique={technique}
+          onComplete={() => setCheckin({ ...checkin, __showAfterPrompt: true })}
+          showAfterPrompt={checkin.__showAfterPrompt}
+          onMoodAfter={submitMoodAfter}
+        />
+      </div>
     )
   }
 
@@ -223,8 +227,9 @@ export default function DailyView({ userId }) {
   const delta = checkin.mood_after - checkin.mood_before
   const message = getEncouragementMessage(streak?.current_streak || 1, delta)
   return (
+    <div key="done" className="fade-in">
     <Centered>
-      <h1 style={{ fontSize: 22, margin: '0 0 8px' }}>Done for today.</h1>
+      <h1 style={{ fontSize: 22, margin: '0 0 8px' }}>That's it for tonight.</h1>
       <p style={{ color: 'var(--muted)' }}>
         {technique.name} — mood went from {checkin.mood_before} to {checkin.mood_after}
         {delta > 0 ? ` (+${delta})` : delta < 0 ? ` (${delta})` : ' (no change)'}
@@ -248,6 +253,7 @@ export default function DailyView({ userId }) {
         {message}
       </p>
     </Centered>
+    </div>
   )
 }
 
@@ -291,10 +297,15 @@ function MoodPrompt({ title, onSelect }) {
 
 function TechniqueCard({ technique, onComplete, showAfterPrompt, onMoodAfter }) {
   if (showAfterPrompt) {
-    return <MoodPrompt title="How do you feel now?" onSelect={onMoodAfter} />
+    return (
+      <div key="after-prompt" className="fade-in">
+        <MoodPrompt title="And now?" onSelect={onMoodAfter} />
+      </div>
+    )
   }
 
   return (
+    <div key="technique-body" className="fade-in">
     <Centered>
       <p style={{ color: 'var(--accent)', fontSize: 13, marginBottom: 4 }}>
         {technique.category} · {technique.duration_min} min
@@ -314,11 +325,12 @@ function TechniqueCard({ technique, onComplete, showAfterPrompt, onMoodAfter }) 
             <CountdownTimer minutes={technique.duration_min} />
           )}
           <button onClick={onComplete} style={{ ...moodButtonStyle, width: '100%', marginTop: 20 }}>
-            I did this
+            Done.
           </button>
         </>
       )}
     </Centered>
+    </div>
   )
 }
 
@@ -449,7 +461,7 @@ function AudioSession({ audioUrl, onComplete }) {
       )}
 
       <button onClick={onComplete} style={{ ...moodButtonStyle, width: '100%', marginTop: 20 }}>
-        I did this
+        Done.
       </button>
     </div>
   )
@@ -572,7 +584,7 @@ function Centered({ children }) {
   return (
     <div
       style={{
-        minHeight: '100dvh',
+        minHeight: 'calc(100dvh - 146px)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

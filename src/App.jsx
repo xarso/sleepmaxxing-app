@@ -107,10 +107,12 @@ function Home({ userId }) {
         </button>
       </div>
 
-      <div style={{ paddingTop: 56, paddingBottom: 48 }}>
-        {tab === 'today' && <DailyView userId={userId} />}
-        {tab === 'library' && <Library userId={userId} />}
-        {tab === 'settings' && <Settings userId={userId} />}
+      <div style={{ paddingTop: 56, paddingBottom: 90 }}>
+        <div key={tab} className="fade-in">
+          {tab === 'today' && <DailyView userId={userId} />}
+          {tab === 'library' && <Library userId={userId} />}
+          {tab === 'settings' && <Settings userId={userId} />}
+        </div>
       </div>
       <CrisisFooter />
     </div>
